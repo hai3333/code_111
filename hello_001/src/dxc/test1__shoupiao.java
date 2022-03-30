@@ -4,37 +4,45 @@ package dxc;
 
      */
 
-class window extends Thread {
-    private static int ticket = 100;
+class window implements Runnable {
+    private static  int ticket = 100;
 
     @Override
     public void run() {
         while (true) {
-            if (ticket > 0) {
-                System.out.println(getName() + "卖票，票号为：" + ticket);
-                ticket--;
-            } else {
-                break;
-            }
+
+            show();
         }
     }
+  private synchronized void show(){
+       // synchronized (this) {
+            if (ticket > 0) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(Thread.currentThread().getName() + "卖票，票号为：" + ticket);
+                ticket--;
 
+            }
+        //}
+  }
 
 }
 
 class WindowTest {
     public static void main(String[] args) {
-        window w1 =new window();
-        window w2 = new window();
-        window w3 = new window();
+    window w1=new window();
+    Thread t1=new Thread(w1);
+    Thread t2=new Thread(w1);
+    Thread t3=new Thread(w1);
 
-        w1.setName("窗口1");
-        w2.setName("窗口2");
-        w3.setName("窗口3");
+    t1.start();
+    t2.start();
+    t3.start();
 
-        w1.start();
-        w2.start();
-        w3.start();
+
 
 
     }
